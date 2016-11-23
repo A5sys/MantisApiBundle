@@ -1,0 +1,15 @@
+{
+    "name": "a5sys/mantis-api-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3",
+        "symfony/framework-bundle": ">=2.1",
+        "econea/nusoap": ">=v0.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "A5sys\\MantisApiBundle\\": ""
+        }
+    }
+}

@@ -1,0 +1,15 @@
+services:
+    mantis_api_bundle.service.project_version:
+        class: A5sys\MantisApiBundle\Services\ProjectVersionService
+        arguments:
+            - "@mantis_api_bundle.service.mantis_client"
+    mantis_api_bundle.service.mantis_client:
+        class: A5sys\MantisApiBundle\Services\MantisClientService
+        arguments:
+            - '%mantis_api.url%'
+            - '%mantis_api.login%'
+            - '%mantis_api.password%'
+    mantis_api_bundle.service.issue:
+        class: A5sys\MantisApiBundle\Services\IssueService
+        arguments:
+            - "@mantis_api_bundle.service.mantis_client"
