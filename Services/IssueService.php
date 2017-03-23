@@ -68,6 +68,25 @@ class IssueService extends AbstractService
     }
 
     /**
+     * Create an issue
+     *
+     * @param [] $issueData
+     * @return array the issue data
+     */
+    public function createIssue($issueData)
+    {
+        $client = $this->getClientService();
+
+        $wsFunction = 'mc_issue_add';
+
+        $parameters = array(
+            'issue' => $issueData,
+        );
+
+        return $client->callAuthenticatedWs($wsFunction, $parameters);
+    }
+
+    /**
      * Update issue
      *
      * @param int $issueId
