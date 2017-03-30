@@ -120,7 +120,7 @@ class IssueService extends AbstractService
 
         $wsFunction = 'mc_issue_attachment_add';
 
-        $parameters = array_merge(['issue_id' => $issueId], $attachmentData);
+        $parameters = array_merge(array('issue_id' => $issueId), $attachmentData);
 
         return $client->callAuthenticatedWs($wsFunction, $parameters);
     }
