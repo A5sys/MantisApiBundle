@@ -71,7 +71,7 @@ class IssueService extends AbstractService
      * Create an issue
      *
      * @param [] $issueData
-     * @return array the issue data
+     * @return int the issue id
      */
     public function createIssue($issueData)
     {
@@ -103,6 +103,24 @@ class IssueService extends AbstractService
             'issueId' => $issueId,
             'issue' => $issueData,
         );
+
+        return $client->callAuthenticatedWs($wsFunction, $parameters);
+    }
+
+    /**
+     * Add an attachment
+     *
+     * @param int $issueId
+     * @param []  $attachmentData (name, file_type, content)
+     * @return int the attachment id
+     */
+    public function addAttachment($issueId, $attachmentData)
+    {
+        $client = $this->getClientService();
+
+        $wsFunction = 'mc_issue_attachment_add';
+
+        $parameters = array_merge(['issue_id' => $issueId], $attachmentData);
 
         return $client->callAuthenticatedWs($wsFunction, $parameters);
     }
