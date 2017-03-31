@@ -3,7 +3,6 @@
 namespace A5sys\MantisApiBundle\Services;
 
 use A5sys\MantisApiBundle\Exception\UnknownIssueException;
-use A5sys\MantisApiBundle\Exception\VersionExistException;
 
 /**
  *
