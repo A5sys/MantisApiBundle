@@ -3,7 +3,6 @@
 namespace A5sys\MantisApiBundle\Services;
 
 use A5sys\MantisApiBundle\Exception\UnknownIssueException;
-use A5sys\MantisApiBundle\Exception\VersionExistException;
 
 /**
  *
@@ -29,7 +28,7 @@ class MantisClientService
     public function __construct($url, $username, $password)
     {
         $this->soapUrl = $url;
-        $this->soapWsdlUrl = false;
+        $this->soapWsdlUrl = $this->soapUrl.'?wsdl';
         $this->username = $username;
         $this->password = $password;
     }
@@ -44,22 +43,19 @@ class MantisClientService
     public function callWs($wsFunction, $params = array())
     {
         $client = $this->getSoapClient();
+        $result = null;
 
-        $result = $client->call($wsFunction, $params);
-
-        if ($client->fault) {
-            if ($result['faultstring'] === 'Version exists for project') {
-                throw new VersionExistException();
+        try {
+            $result = $client->__soapCall($wsFunction, $params);
+        } catch (\SoapFault $err) {
+            if (preg_match('/Issue .+ does not exist./ui', $err->getMessage())) {
+                throw new UnknownIssueException($err->getMessage());
             }
+            throw $err;
         }
 
-        $err = $client->getError();
-        if ($err) {
-            if ($err === static::FAULT_ISSUE_UNKNOWN) {
-                throw new UnknownIssueException($err);
-            }
-            throw new \LogicException($err);
-        }
+        // Convert stdclass to array
+        $result = json_decode(json_encode($result), true);
 
         return $result;
     }
@@ -73,8 +69,11 @@ class MantisClientService
      */
     public function callAuthenticatedWs($wsFunction, $params = array())
     {
-        $params['username'] = $this->username;
-        $params['password'] = $this->password;
+        // Username and password must be the first keys of the array
+        $params = array_merge(array(
+            'username' => $this->username,
+            'password' => $this->password,
+        ), $params);
 
         return $this->callWs($wsFunction, $params);
     }
@@ -87,24 +86,14 @@ class MantisClientService
     protected function getSoapClient()
     {
         if ($this->client === null) {
-            $client = new \nusoap_client($this->soapUrl, $this->soapWsdlUrl, false, false, false, false, 0, 300);
-
-            //no debug for better performance
-            $client->setGlobalDebugLevel(0);
-            //use utf8
-            $client->soap_defencoding = 'UTF-8';
-            $client->decode_utf8 = false;
-
-            $err = $client->getError();
-            if ($err) {
-                echo '<h2>Constructor error</h2><pre>'.$err.'</pre>';
-                echo '<h2>Debug</h2><pre>' . htmlspecialchars($client->getDebug(), ENT_QUOTES).'</pre>';
-                exit();
-            }
-
-            $client->useHTTPPersistentConnection();
-
-            $this->client = $client;
+            $this->client = new \SoapClient($this->soapWsdlUrl, array(
+                'style' => SOAP_RPC,
+                'use' => SOAP_ENCODED,
+                'cache_wsdl' => WSDL_CACHE_NONE,
+                'connection_timeout' => 300,
+                'encoding' => 'UTF-8',
+                'exceptions' => true,
+            ));
         }
 
         return $this->client;
