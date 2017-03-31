@@ -93,7 +93,6 @@ class MantisClientService
                 'connection_timeout' => 300,
                 'encoding' => 'UTF-8',
                 'exceptions' => true,
-                'trace' => true,
             ));
         }
 
