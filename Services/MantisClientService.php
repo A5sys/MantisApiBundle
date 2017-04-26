@@ -18,19 +18,28 @@ class MantisClientService
     protected $soapWsdlUrl;
     protected $username;
     protected $password;
+    protected $verifyPeer;
+    protected $verifyPeerName;
+    protected $allowSelfSigned;
 
     /**
      *
-     * @param type $url
-     * @param type $username
-     * @param type $password
+     * @param string  $url
+     * @param string  $username
+     * @param string  $password
+     * @param boolean $verifyPeer
+     * @param boolean $verifyPeerName
+     * @param boolean $allowSelfSigned
      */
-    public function __construct($url, $username, $password)
+    public function __construct($url, $username, $password, $verifyPeer, $verifyPeerName, $allowSelfSigned)
     {
         $this->soapUrl = $url;
         $this->soapWsdlUrl = $this->soapUrl.'?wsdl';
         $this->username = $username;
         $this->password = $password;
+        $this->verifyPeer = $verifyPeer;
+        $this->verifyPeerName = $verifyPeerName;
+        $this->allowSelfSigned = $allowSelfSigned;
     }
 
     /**
@@ -86,6 +95,14 @@ class MantisClientService
     protected function getSoapClient()
     {
         if ($this->client === null) {
+             $context = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => $this->verifyPeer,
+                    'verify_peer_name' => $this->verifyPeerName,
+                    'allow_self_signed' => $this->allowSelfSigned,
+                ]
+            ]);
+
             $this->client = new \SoapClient($this->soapWsdlUrl, array(
                 'style' => SOAP_RPC,
                 'use' => SOAP_ENCODED,
@@ -93,6 +110,7 @@ class MantisClientService
                 'connection_timeout' => 300,
                 'encoding' => 'UTF-8',
                 'exceptions' => true,
+                'stream_context' => $context,
             ));
         }
 

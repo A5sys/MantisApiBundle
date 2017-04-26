@@ -9,6 +9,9 @@ services:
             - '%mantis_api.url%'
             - '%mantis_api.login%'
             - '%mantis_api.password%'
+            - '%mantis_api.verify_peer%'
+            - '%mantis_api.verify_peer_name%'
+            - '%mantis_api.allow_self_signed%'
     mantis_api_bundle.service.issue:
         class: A5sys\MantisApiBundle\Services\IssueService
         arguments:

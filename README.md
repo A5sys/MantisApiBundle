@@ -19,3 +19,15 @@ PHP extensions:
 In the AppKernel, activate the bundle
 
             new A5sys\MantisApiBundle\MantisApiBundle(),
+
+# The configuration
+
+In the config.yml, the configuration for the bundle is:
+
+	mantis_api:
+	    login: "%mantis_login%"
+	    password: "%mantis_password%"
+	    url: "%mantis_url%/api/soap/mantisconnect.php"
+	    verify_peer: true #mandatory, the ssl option
+	    verify_peer_name: true #mandatory, the ssl option
+	    allow_self_signed: false #mandatory, the ssl option
