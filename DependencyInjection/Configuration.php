@@ -22,6 +22,9 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('login')->isRequired()->end()
             ->scalarNode('password')->isRequired()->end()
             ->scalarNode('url')->isRequired()->end()
+            ->booleanNode('verify_peer')->defaultTrue()->end()
+            ->booleanNode('verify_peer_name')->defaultTrue()->end()
+            ->booleanNode('allow_self_signed')->defaultFalse()->end()
         ->end();
 
         return $treeBuilder;
