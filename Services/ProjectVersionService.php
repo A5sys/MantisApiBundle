@@ -8,6 +8,8 @@ namespace A5sys\MantisApiBundle\Services;
  */
 class ProjectVersionService extends AbstractService
 {
+    const DATE_FORMAT = 'Y-m-d';
+
     /**
      * Get the versions
      * @param int $projectId
@@ -35,10 +37,12 @@ class ProjectVersionService extends AbstractService
         $client = $this->getClientService();
         $wsFunction = 'mc_project_version_add';
 
+        $dateOrder = new \DateTime();
+
         $versionData = [
             'name' => $version,
             'project_id' => $projectId,
-            'date_order' => null,
+            'date_order' => $dateOrder->format(static::DATE_FORMAT),
             'description' => '',
             'released' => false,
         ];
