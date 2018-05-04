@@ -1,9 +1,9 @@
 services:
-    mantis_api_bundle.service.project_version:
+    A5sys\MantisApiBundle\Services\ProjectVersionService:
         class: A5sys\MantisApiBundle\Services\ProjectVersionService
         arguments:
-            - "@mantis_api_bundle.service.mantis_client"
-    mantis_api_bundle.service.mantis_client:
+            - "@A5sys\\MantisApiBundle\\Services\\MantisClientService"
+    A5sys\MantisApiBundle\Services\MantisClientService:
         class: A5sys\MantisApiBundle\Services\MantisClientService
         arguments:
             - '%mantis_api.url%'
@@ -12,7 +12,7 @@ services:
             - '%mantis_api.verify_peer%'
             - '%mantis_api.verify_peer_name%'
             - '%mantis_api.allow_self_signed%'
-    mantis_api_bundle.service.issue:
+    A5sys\MantisApiBundle\Services\IssueService:
         class: A5sys\MantisApiBundle\Services\IssueService
         arguments:
-            - "@mantis_api_bundle.service.mantis_client"
+            - "@A5sys\\MantisApiBundle\\Services\\MantisClientService"
